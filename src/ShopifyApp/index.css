@@ -1,3 +1,14 @@
 .Collection-Loader {
     margin-top: 20px;
 }
+
+.thumbnail {
+    height: 500px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.thumbnail img {
+    display: block;
+    height: auto;
+}

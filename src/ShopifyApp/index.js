@@ -26,6 +26,8 @@ export default class ShopifyApp extends Component {
         this.initCart = this.initCart.bind(this)
         this.onAddCart = this.onAddCart.bind(this)
         this.fetchAllCollections = this.fetchAllCollections.bind(this)
+        this.onAddVariants = this.onAddVariants.bind(this)
+        this.onOrderCollection = this.onOrderCollection.bind(this)
 
         this.fetchAllCollections()
         this.initCart()
@@ -55,6 +57,25 @@ export default class ShopifyApp extends Component {
     }
 
     /**
+     * onOrderCollection
+     * 
+     */
+    async onOrderCollection (event) {
+        event.preventDefault()
+        const products = this.state.products[this.state.collection.collection_id]
+        console.log(products)
+        await Promise.all(products.map((product) => (this.cart.createLineItemsFromVariants({
+            variant: product.selectedVariant,
+            quantity: 1
+        }))))
+
+        this.setState({
+            checkoutUrl: this.cart.checkoutUrl,
+            cartItems: this.cart.lineItemCount
+        })
+    }
+
+    /**
      * componentDidMount
      * React LifeCycle Hook
      */
@@ -69,7 +90,7 @@ export default class ShopifyApp extends Component {
      */
     async initCart () {
         try {
-            this.cart = await shopClient.createCart()
+            this.cart = await shopClient.fetchRecentCart()
         } catch (error) {
             console.error('Error occured while initializing cart')
         }
@@ -85,7 +106,27 @@ export default class ShopifyApp extends Component {
         this.setState({
             collection: selectedCollection
         })
-    } 
+    }
+
+    /**
+     * onAddVariants
+     * adds all the variants for a product to a cart
+     */
+    async onAddVariants (product) {
+        const allVariants = product.variants.map((variant) => {
+            return this.cart.createLineItemsFromVariants({
+                variant,
+                quantity: 1
+            })
+        })
+
+        await Promise.all(allVariants)
+
+        this.setState({
+            cartItems: this.cart.lineItemCount,
+            checkoutUrl: this.cart.checkoutUrl
+        })
+    }
 
 
     /**
@@ -93,6 +134,10 @@ export default class ShopifyApp extends Component {
      * fetches the products from the Shopify API
      */
     async fetchProducts (collection_id) {
+        if (this.state.products[collection_id]) {
+            return
+        }
+
         // Set the products fetching to loading state
         this.setState({
             products: Object.assign({}, this.state.products, {
@@ -163,18 +208,25 @@ export default class ShopifyApp extends Component {
                 </div>
                 <div className="row">
                     <div className="col-sm-6">
-                        <CollectionDisplay collection={this.state.collection} />
+                        <CollectionDisplay collection={this.state.collection}
+                                           onOrderCollection={this.onOrderCollection} 
+                                           products={selectedProducts} />
                     </div>
                     <div className="col-sm-6">
                         <CartDisplay
                             cartItems={this.state.cartItems}
                             checkoutUrl={this.state.checkoutUrl}
-                            onEmptyClick={this.onEmptyCart.bind(this)}/>
+                            onEmptyClick={this.onEmptyCart.bind(this)}
+                        />
                     </div>
                 </div>
                 <div className="row">
                     <ProductsSelector 
-                        onAddCart={this.onAddCart} products={selectedProducts} />
+                        onAddCart={this.onAddCart} 
+                        products={selectedProducts}
+                        collection={this.state.collection}
+                        onAddVariants={this.onAddVariants}
+                    />
                 </div>
             </div>
         )

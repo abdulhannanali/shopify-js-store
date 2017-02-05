@@ -15,6 +15,14 @@ import './index.css'
  * is handled by the parent component, in order to maintain a separation of concerns here
  */
 export default class ProductsSelector extends Component {
+    constructor () {
+        super()
+
+        this.addAllVariants = this.addAllVariants.bind(this)
+    }
+
+    state = {}
+    
     render () {
         if (this.props.products === 'loading') {
             return (
@@ -30,17 +38,26 @@ export default class ProductsSelector extends Component {
         ))
 
         let noProductsMessage
-        
+        let noCollectionMessage
+
         if (isEmpty(productThumbs)) {
             noProductsMessage = (
                 <h1>No products there in this collection</h1>
+            )
+        } 
+        if (isEmpty(this.props.collection)) {
+            noCollectionMessage = (
+                <h1>Select a collection to see the list of products</h1>
             )
         }
 
         return (
             <div className="row">
-                <div className="col-sm-12">
-                    {noProductsMessage}
+                <div className='col-sm-12 products-heading'>
+                    <h1>Products</h1>
+                    {noCollectionMessage || noProductsMessage}
+                </div>
+                <div className='col-sm-12'>
                     {productRows}
                 </div>
             </div>
@@ -64,6 +81,17 @@ export default class ProductsSelector extends Component {
     }
 
     /**
+     * event handler to be called when we want to addAllVariants
+     * related to a certain product
+     */
+    addAllVariants (product, event) {
+        event.preventDefault()
+        const onAddVariants = this.props.onAddVariants || (() => {})
+
+        onAddVariants(product)
+    }
+
+    /**
      * getProductThumbs
      * generates the thumbnails of the products
      * to be considered
@@ -74,7 +102,7 @@ export default class ProductsSelector extends Component {
             const selectedVariant = product.selectedVariant
 
             return (
-                <div key={product.id} className="col-sm-6 col-md-4">
+                <div key={selectedVariant.id.toString()} data-key={selectedVariant.id.toString()} className="col-sm-6 col-md-4">
                     <div className="thumbnail">
                         <img className="img-responsive" 
                              src={product.selectedVariantImage && product.selectedVariantImage.src} 
@@ -84,6 +112,7 @@ export default class ProductsSelector extends Component {
                             <h3>{product.title}</h3>
                             <p><StockLabel available={selectedVariant.available}/></p>
                             <p dangerouslySetInnerHTML={{__html: product.description || ''}} />
+                            <p>Price: ${product.selectedVariant.price}</p>
                         </div>
                         <div className="thumb-buttons">
                             <a href="#" onClick={this.buyNow.bind(this, product)} 
@@ -92,6 +121,9 @@ export default class ProductsSelector extends Component {
                             </a>
                             <a href="#" className="btn btn-primary" onClick={this.addToCart.bind(this, product)}>
                                 Add To Cart <span className="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                            </a>
+                            <a href="#" className="btn btn-info" onClick={this.addAllVariants.bind(this, product)}>
+                                Add All Variants
                             </a>
                         </div>
                     </div>
