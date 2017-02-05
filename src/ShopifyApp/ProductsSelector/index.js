@@ -31,11 +31,7 @@ export default class ProductsSelector extends Component {
         }
 
         const productThumbs = this.getProductThumbs(this.props.products)
-        const productRows = chunk(productThumbs, 3).map((thumbsChunk) => (
-            <div className="row">
-                {thumbsChunk}
-            </div>
-        ))
+        const masonryThumbs = this.masonThumbs(productThumbs)
 
         let noProductsMessage
         let noCollectionMessage
@@ -52,13 +48,15 @@ export default class ProductsSelector extends Component {
         }
 
         return (
-            <div className="row">
-                <div className='col-sm-12 products-heading'>
-                    <h1>Products</h1>
-                    {noCollectionMessage || noProductsMessage}
+            <div className="ProductsSelector">
+                <div className="row">
+                    <div className='col-sm-12 products-heading'>
+                        <h1>Products</h1>
+                        {noCollectionMessage || noProductsMessage}
+                    </div>
                 </div>
-                <div className='col-sm-12'>
-                    {productRows}
+                <div className="row">
+                    {masonryThumbs}
                 </div>
             </div>
         )
@@ -102,7 +100,7 @@ export default class ProductsSelector extends Component {
             const selectedVariant = product.selectedVariant
 
             return (
-                <div key={selectedVariant.id.toString()} data-key={selectedVariant.id.toString()} className="col-sm-6 col-md-4">
+                <div key={selectedVariant.id.toString()} data-key={selectedVariant.id.toString()} className="product-thumb">
                     <div className="thumbnail">
                         <img className="img-responsive" 
                              src={product.selectedVariantImage && product.selectedVariantImage.src} 
@@ -130,6 +128,30 @@ export default class ProductsSelector extends Component {
                 </div>
             )
         })
+    }
+
+    /**
+     * masonThumbs
+     * Arranges the thumbnails within the columns in a way, that they give an effect 
+     * similar to what we achieve using Masonry 3.
+     * We do this by keeping the content within the vertical rows
+     * 
+     * @param {Array} productThumbs Array of Product thumbnails without any column or row wrapped around
+     * @returns {Array} array of thumbnails arranged within Columns which are treated as Vertical rows here.
+     */
+    masonThumbs (productThumbs) {
+        const colLength = Math.ceil(productThumbs.length / 3)
+        const chunkedThumbs = chunk(productThumbs, colLength)
+        const colThumbs = chunkedThumbs.map((thumb) => {
+            return (
+                <div className="col-md-4 col-sm-12">
+                    {thumb}
+                </div>
+            )
+        })
+
+
+        return colThumbs
     }
 }
 
