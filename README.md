@@ -8,12 +8,12 @@ which allows user to explore the collections dynamically and checkout with a sin
 This appliation is built using ReactJS
 
 ### Purpose behind building this application
-I built this application in order to play with Shopify as well as explore the amazing this it can do for the application. With the growing
-interest in Client Side application and new trends such as Progressive Web Applications are making the web more powerful than 
+I built this application in order to play with Shopify Buy SDK as well as explore, the amazing stuff I can build using this SDK.
+ With the growing interest in Client Side application and new trends such as Progressive Web Applications web is more powerful than 
 ever before.
 
 Shopify Buy SDK is released right at time for such revolution. This is just one of the first step I took
-in order to build something more cooler such as a PWA with the help of what Shopify Buy SDK enables me to do and 
+in order to build something more cooler such as a PWA with the help of what Shopify Buy SDK enables us to do and 
 experiment this Shopify Buy SDK along with technologies that are becoming a standard now such as [Polymer](https://www.polymer-project.org)
 
 #### LICENSE
