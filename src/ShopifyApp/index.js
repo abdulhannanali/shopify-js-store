@@ -30,7 +30,6 @@ export default class ShopifyApp extends Component {
         this.onOrderCollection = this.onOrderCollection.bind(this)
 
         this.fetchAllCollections()
-        this.initCart()
     }
 
     /**
@@ -80,7 +79,17 @@ export default class ShopifyApp extends Component {
      * React LifeCycle Hook
      */
     componentDidMount () {
-        this.fetchAllCollections()
+        this.shopifyInitializations.bind(this)()
+    }
+
+    /**
+     * shopifyInitializations
+     * initilizations to be perform first time the component mounts,
+     * such as initializing cart and other stuff
+     */
+    async shopifyInitializations () {
+        await this.initCart()
+        await this.fetchAllCollections()
     }
 
     /**
@@ -91,6 +100,10 @@ export default class ShopifyApp extends Component {
     async initCart () {
         try {
             this.cart = await shopClient.fetchRecentCart()
+            this.setState({
+                checkoutUrl: this.cart.checkoutUrl,
+                cartItems: this.cart.lineItemCount
+            })
         } catch (error) {
             console.error('Error occured while initializing cart')
         }
