@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 
-import shopClient from './shopClient'
-
 /**
  * CollectionSelect
  * Selects the collection to be displayed using ShopifyAPI
@@ -11,35 +9,9 @@ export default class CollectionSelect extends Component {
     constructor () {
         super()
 
-        this.state = {
-            collections: [],
-            error: false,
-            inProgress: false
-        }
-
-        this.fetchCollections = this.fetchCollections.bind(this)
         this.onChange = this.onChange.bind(this)
-    }
-
-    componentDidMount () {
-        this.fetchCollections()
-    }
-    
-    async fetchCollections () {
-        try {
-            console.log('fetch')
-            const collections = await shopClient.fetchAllCollections()
-            const collectionsData = collections.map((collection) => collection.attrs)
-
-            console.log(collectionsData)
-            this.setState({
-                collections: collectionsData,
-                selectedValue: collectionsData[0].collection_id
-            })
-        } catch (error) {
-            this.setState({
-                error: true
-            })
+        this.state = {
+            selectedValue: undefined
         }
     }
     
@@ -50,14 +22,14 @@ export default class CollectionSelect extends Component {
 
         if (this.props.onChange) {
             this.props.onChange({
-                collections: this.state.collections,
                 selected: object.value
             })
         }
     }
 
     render () {
-        const selectValues = this.state.collections.map((collection) => {
+        console.log(this.props.collections)
+        const selectValues = this.props.collections.map((collection) => {
             return {
                 value: collection.collection_id,
                 label: collection.title
@@ -65,10 +37,11 @@ export default class CollectionSelect extends Component {
         }) 
 
         return (
-            <div class="collection-select">
+            <div className="collection-select">
                 <Select options={selectValues}
                         onChange={this.onChange}
-                        value={this.state.selectedValue} />
+                        value={this.state.selectedValue}
+                        placeholder="Select a Shopify collection!" />
             </div>
         )
     }

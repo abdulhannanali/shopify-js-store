@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "lodash.chunk": "^4.2.0"
+  }
+}

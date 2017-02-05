@@ -1,0 +1,12 @@
+.collection-display {
+    text-align: center;
+    margin-top: 10px;
+    border-top: 1px grey solid;
+    border-bottom: 1px black solid;
+}
+
+.collection-display img {
+    height: 240px;
+    text-align: center;
+    margin: auto;
+}

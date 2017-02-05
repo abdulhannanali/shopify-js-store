@@ -1,0 +1,14 @@
+.Cart-Display {
+    text-align: center;
+    margin-top: 10px;
+    border-top: 1px #5e8e3e solid;
+    border-left: 1px #5e8e3e solid;
+}
+
+.Cart-Display .Cart-Icon {
+    color: #5e8e3e;
+}
+
+.cart-buttons a {
+    margin: 10px;
+}
