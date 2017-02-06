@@ -62,7 +62,6 @@ export default class ShopifyApp extends Component {
     async onOrderCollection (event) {
         event.preventDefault()
         const products = this.state.products[this.state.collection.collection_id]
-        console.log(products)
         await Promise.all(products.map((product) => (this.cart.createLineItemsFromVariants({
             variant: product.selectedVariant,
             quantity: 1
@@ -173,10 +172,10 @@ export default class ShopifyApp extends Component {
      * event is called when we want to add a product
      * to a cart
      */
-    async onAddCart (product) {
+    async onAddCart (selectedVariant, quantity = 1) {
         await this.cart.createLineItemsFromVariants({
-            variant: product.selectedVariant,
-            quantity: 1
+            variant: selectedVariant,
+            quantity
         })
 
         this.setState({

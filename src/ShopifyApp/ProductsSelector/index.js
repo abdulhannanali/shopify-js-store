@@ -19,10 +19,27 @@ export default class ProductsSelector extends Component {
         super()
 
         this.addAllVariants = this.addAllVariants.bind(this)
+        this.onQuantityChange = this.onQuantityChange.bind(this)
+
+        this.state = {
+            productsQuantity: {}
+        }
     }
 
-    state = {}
-    
+    /**
+     * onQuantityChange
+     * Change the quantity of the products
+     */
+    onQuantityChange (product, event) {
+        event.persist()
+
+        this.setState({
+            productsQuantity: Object.assign({}, this.state.productsQuantity, {
+                [product.id]: event.target.value
+            })
+        })
+    }
+
     render () {
         if (this.props.products === 'loading') {
             return (
@@ -74,8 +91,11 @@ export default class ProductsSelector extends Component {
     addToCart (product, event) {
         event.preventDefault()
         const onAddCart = this.props.onAddCart || (() => {})
+        const productQuantity = this.state.productsQuantity[product.id]
 
-        onAddCart(product)
+        console.log(productQuantity)
+
+        onAddCart(product, productQuantity)
     }
 
     /**
@@ -98,6 +118,7 @@ export default class ProductsSelector extends Component {
 
         return products.map((product) => {
             const selectedVariant = product.selectedVariant
+            const productQuantity = this.state.productsQuantity[selectedVariant.id] || 1
 
             return (
                 <div key={selectedVariant.id.toString()} data-key={selectedVariant.id.toString()} className="product-thumb">
@@ -112,12 +133,19 @@ export default class ProductsSelector extends Component {
                             <p dangerouslySetInnerHTML={{__html: product.description || ''}} />
                             <p>Price: ${product.selectedVariant.price}</p>
                         </div>
+                        <div className="Quantity-select">
+                            <p>Select Quantity for Product</p>
+                            <input type="number" 
+                                className="form-control" 
+                                value={productQuantity}
+                                onChange={this.onQuantityChange.bind(this, selectedVariant)} />
+                        </div>
                         <div className="thumb-buttons">
                             <a href="#" onClick={this.buyNow.bind(this, product)} 
                                         className='btn btn-default'>
                                 Buy Now!
                             </a>
-                            <a href="#" className="btn btn-primary" onClick={this.addToCart.bind(this, product)}>
+                            <a href="#" className="btn btn-primary" onClick={this.addToCart.bind(this, selectedVariant)}>
                                 Add To Cart <span className="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
                             </a>
                             <a href="#" className="btn btn-info" onClick={this.addAllVariants.bind(this, product)}>
