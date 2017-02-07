@@ -13,7 +13,6 @@ import './index.css'
 export default class ShopifyApp extends Component {
     constructor () {
         super()
-
         this.state = {
             collection: {}, // Collection to be focused on by the Screen
             products: {}, // Contains all the products there needs to be for an application
@@ -144,6 +143,8 @@ export default class ShopifyApp extends Component {
     /**
      * fetchProducts
      * fetches the products from the Shopify API
+     *
+     * Clearly didn't think this problem through
      */
     async fetchProducts (collection_id) {
         if (this.state.products[collection_id]) {

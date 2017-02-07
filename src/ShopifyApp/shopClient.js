@@ -17,4 +17,6 @@ const shopClient = ShopifyBuy.buildClient({
     domain: SHOPIFY_DOMAIN
 })
 
+window.shopClient = shopClient
+
 export default shopClient

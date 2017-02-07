@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import OptionsDisplay from '../OptionsDisplay'
+
 import isEmpty from 'lodash.isempty'
 import chunk from 'lodash.chunk'
 
@@ -93,8 +95,6 @@ export default class ProductsSelector extends Component {
         const onAddCart = this.props.onAddCart || (() => {})
         const productQuantity = this.state.productsQuantity[product.id]
 
-        console.log(productQuantity)
-
         onAddCart(product, productQuantity)
     }
 
@@ -118,7 +118,9 @@ export default class ProductsSelector extends Component {
 
         return products.map((product) => {
             const selectedVariant = product.selectedVariant
+            const shopifyUrl = 'https://fancyteestore.myshopify.com/products/' + product.id + '?variant=' + selectedVariant.id
             const productQuantity = this.state.productsQuantity[selectedVariant.id] || 1
+            const totalPrice = product.selectedVariant.price * productQuantity
 
             return (
                 <div key={selectedVariant.id.toString()} data-key={selectedVariant.id.toString()} className="product-thumb">
@@ -131,7 +133,7 @@ export default class ProductsSelector extends Component {
                             <h3>{product.title}</h3>
                             <p><StockLabel available={selectedVariant.available}/></p>
                             <p dangerouslySetInnerHTML={{__html: product.description || ''}} />
-                            <p>Price: ${product.selectedVariant.price}</p>
+                            <p>Price: ${product.selectedVariant.price} * {productQuantity} = ${totalPrice}</p>
                         </div>
                         <div className="Quantity-select">
                             <p>Select Quantity for Product</p>
@@ -140,6 +142,7 @@ export default class ProductsSelector extends Component {
                                 value={productQuantity}
                                 onChange={this.onQuantityChange.bind(this, selectedVariant)} />
                         </div>
+                        <OptionsDisplay options={product.options} />
                         <div className="thumb-buttons">
                             <a href="#" onClick={this.buyNow.bind(this, product)} 
                                         className='btn btn-default'>
@@ -148,9 +151,7 @@ export default class ProductsSelector extends Component {
                             <a href="#" className="btn btn-primary" onClick={this.addToCart.bind(this, selectedVariant)}>
                                 Add To Cart <span className="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
                             </a>
-                            <a href="#" className="btn btn-info" onClick={this.addAllVariants.bind(this, product)}>
-                                Add All Variants
-                            </a>
+                            <a href={shopifyUrl} className="btn btn-success">Visit on Shopify Store</a>
                         </div>
                     </div>
                 </div>
