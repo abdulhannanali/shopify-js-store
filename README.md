@@ -1,5 +1,7 @@
 # Shopify JavaScript Store
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/abdulhannanali/shopify-js-store.svg)](https://greenkeeper.io/)
+
 DEMO: [https://hannanali.tech/shopify-js-store/](https://hannanali.tech/shopify-js-store/)
 
 A simple store built using [Shopify's Buy SDK](https://shopify.github.io/js-buy-sdk/)
